@@ -36,3 +36,12 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+# Docker
+mysql_data/
+
+# Uploads (user-generated)
+src/public/assets/images/products/prod_*
+
+# Claude
+.claude/

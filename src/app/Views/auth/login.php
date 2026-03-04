@@ -1,0 +1,44 @@
+<div class="container">
+    <?php \App\Core\View::partial('breadcrumbs', ['breadcrumbs' => $breadcrumbs ?? []]); ?>
+
+    <div class="auth-layout">
+        <div class="auth-form">
+            <h2>Войти или зарегистрироваться</h2>
+
+            <?php if (!empty($error)): ?>
+                <div class="auth-error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
+            <form method="POST" action="/login">
+                <div class="auth-form__group">
+                    <label class="auth-form__label">Номер телефона</label>
+                    <input type="tel" name="phone" class="auth-form__input" required
+                           value="<?= htmlspecialchars($phone ?? '') ?>"
+                           placeholder="+7 908 885 47 92">
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label">Пароль</label>
+                    <input type="password" name="password" class="auth-form__input" required
+                           placeholder="Введите пароль">
+                </div>
+
+                <button type="submit" class="btn-auth">Продолжить</button>
+            </form>
+
+            <div class="auth-links">
+                Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+            </div>
+        </div>
+
+        <div class="auth-image">
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #2c3e50 0%, #000 100%); display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 50%; opacity: 0.2;">
+                    <path d="M10 50C16 40 24 32 34 28C28 24 22 16 18 8C24 13 30 18 37 21C34 15 32 9 34 2C37 9 41 15 46 19C51 15 55 9 58 2C59 9 58 15 55 21C62 18 68 13 74 8C71 16 65 24 58 28C68 32 76 40 82 50" stroke="white" stroke-width="3" fill="none"/>
+                    <circle cx="34" cy="16" r="3.5" fill="white"/>
+                    <circle cx="58" cy="16" r="3.5" fill="white"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
