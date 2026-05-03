@@ -21,6 +21,9 @@ RUN npm prune --omit=dev
 # ── Runtime stage ────────────────────────────────────────
 FROM node:20-alpine
 
+# su-exec — позволяет дропать привилегии в entrypoint (~30 KB, alpine-стандарт)
+RUN apk add --no-cache su-exec
+
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=4000
@@ -31,9 +34,11 @@ COPY --from=builder /app/dist          ./dist
 COPY --from=builder /app/server        ./server
 COPY --from=builder /app/package.json  ./package.json
 
-# Том для базы и загруженных файлов
-RUN mkdir -p /app/data/uploads && chown -R node:node /app/data
-USER node
+# Entrypoint фиксит owner на bind-mount-томе перед стартом приложения
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# НЕ ставим USER node — entrypoint сам сбрасывает привилегии
 EXPOSE 4000
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server/index.js"]
