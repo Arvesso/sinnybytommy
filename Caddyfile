@@ -1,14 +1,13 @@
 {
 	# Глобальные настройки Caddy
 	email {$ACME_EMAIL}
-	# admin off  # раскомментируй, если не нужен админ-API на :2019
 }
 
-# Основной домен + www-зеркало (Caddy сам выпустит сертификат на оба)
+# Основной домен + www-зеркало
 {$DOMAIN}, www.{$DOMAIN} {
 	encode zstd gzip
 
-	# Перенаправление www → apex (опционально, можно убрать если хочешь оба варианта)
+	# Перенаправление www → apex
 	@www host www.{$DOMAIN}
 	redir @www https://{$DOMAIN}{uri} permanent
 
@@ -35,7 +34,6 @@
 	}
 
 	# Всё остальное — на Node-приложение
-	# Caddy сам передаёт X-Forwarded-For и X-Forwarded-Proto вверх по умолчанию
 	reverse_proxy app:4000
 
 	log {
