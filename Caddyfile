@@ -1,0 +1,45 @@
+{
+	# Глобальные настройки Caddy
+	email {$ACME_EMAIL}
+	# admin off  # раскомментируй, если не нужен админ-API на :2019
+}
+
+# Основной домен + www-зеркало (Caddy сам выпустит сертификат на оба)
+{$DOMAIN}, www.{$DOMAIN} {
+	encode zstd gzip
+
+	# Перенаправление www → apex (опционально, можно убрать если хочешь оба варианта)
+	@www host www.{$DOMAIN}
+	redir @www https://{$DOMAIN}{uri} permanent
+
+	# Долгий cache для собранных бандлов и аплоадов
+	@assets path /assets/* /uploads/* /logo.svg /logo-2.svg
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	# Ограничение размера запросов (8 MB — лимит multer для загрузки фоток)
+	request_body {
+		max_size 10MB
+	}
+
+	# Заголовки безопасности
+	header {
+		# HTTPS на год + preload
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		# Защита от MIME-sniffing
+		X-Content-Type-Options "nosniff"
+		# Запрет встраивания в чужие фреймы
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Убираем заголовок Server из ответов
+		-Server
+	}
+
+	# Всё остальное — на Node-приложение
+	# Caddy сам передаёт X-Forwarded-For и X-Forwarded-Proto вверх по умолчанию
+	reverse_proxy app:4000
+
+	log {
+		output stdout
+		format console
+	}
+}

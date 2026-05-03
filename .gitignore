@@ -1,47 +1,8 @@
-# macOS
+node_modules
+dist
 .DS_Store
-.AppleDouble
-.LSOverride
-Icon?
-._*
-.Spotlight-V100
-.Trashes
-
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Code coverage profiles and other test artifacts
-*.out
-coverage.*
-*.coverprofile
-profile.cov
-
-# Dependency directories (remove the comment below to include it)
-vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# env file
+*.log
+data
+!data/uploads/.gitkeep
 .env
-
-# Editor/IDE
-.idea/
-.vscode/
-
-# Docker
-mysql_data/
-
-# Uploads (user-generated)
-src/public/assets/images/products/prod_*
-
-# Claude
-.claude/
+.claude

@@ -1,51 +1,44 @@
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: sinny_nginx
-    ports:
-      - "8080:80"
-    volumes:
-      - ./src/public:/var/www/html/public
-      - ./src/app:/var/www/html/app
-      - ./src/config:/var/www/html/config
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - php
-    networks:
-      - sinny_network
-
-  php:
-    build:
-      context: ./docker/php
-      dockerfile: Dockerfile
-    container_name: sinny_php
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - mysql
-    networks:
-      - sinny_network
-
-  mysql:
-    image: mysql:8.0
-    container_name: sinny_mysql
+  app:
+    build: .
+    container_name: tommysinny-app
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: tommysinny
-      MYSQL_USER: sinny_user
-      MYSQL_PASSWORD: sinny_password
-    ports:
-      - "3307:3306"
+      NODE_ENV: production
+      PORT: "4000"
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+      # Persist SQLite DB and uploaded images
+      - ./data:/app/data
+    expose:
+      - "4000"
     networks:
-      - sinny_network
+      - web
 
-volumes:
-  mysql_data:
+  caddy:
+    image: caddy:2-alpine
+    container_name: tommysinny-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    environment:
+      DOMAIN: ${DOMAIN:-sinnybytommy.ru}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@sinnybytommy.ru}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - web
 
 networks:
-  sinny_network:
+  web:
     driver: bridge
+
+volumes:
+  caddy_data:    # сертификаты Let's Encrypt
+  caddy_config:  # внутренний state Caddy
