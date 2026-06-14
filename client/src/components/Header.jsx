@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, useCart, useUI } from '../store.js';
 import { api } from '../api.js';
 import Logo from './Logo.jsx';
+import Accessibility from './Accessibility.jsx';
 import './Header.css';
 
 export default function Header() {
@@ -47,6 +48,7 @@ export default function Header() {
           </Link>
 
           <div className="header-right">
+            <Accessibility />
             <button className="hr-btn search-btn" onClick={() => setSearchOpen(true)}>
               <span className="hr-label">поиск</span>
               <span className="hr-line" />

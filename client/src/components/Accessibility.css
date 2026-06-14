@@ -1,0 +1,125 @@
+/* ====== Версия для слабовидящих — кнопка в хедере + панель ====== */
+.a11y { position: relative; display: inline-flex; }
+
+.a11y-btn {
+  padding: 6px 0;
+  color: var(--ink);
+  line-height: 0;
+}
+.a11y-btn::after { display: none; } /* без подчёркивания — это иконка */
+.a11y-btn svg { width: 21px; height: 21px; display: block; transition: transform .25s; }
+.a11y-btn:hover svg { transform: scale(1.08); }
+.a11y-btn.is-active { color: var(--accent); }
+
+/* панель настроек */
+.a11y-panel {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 28px);
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 70px -34px rgba(0,0,0,.45);
+  padding: 22px 22px 20px;
+  z-index: 120;
+}
+
+.a11y-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.a11y-title {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.a11y-x {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border: 0; background: transparent;
+  font-size: 24px; line-height: 1;
+  color: var(--muted);
+  transition: color .2s, transform .2s;
+}
+.a11y-x:hover { color: var(--ink); transform: rotate(90deg); }
+
+.a11y-group { margin-bottom: 18px; }
+.a11y-group-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.a11y-opts { display: flex; gap: 8px; }
+
+.a11y-opt {
+  flex: 1;
+  min-height: 42px;
+  padding: 8px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.a11y-opt:hover { border-color: var(--ink); }
+.a11y-opt.is-on {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.a11y-font { font-family: var(--serif); font-weight: 700; line-height: 1; }
+
+/* кнопки цветовых схем */
+.a11y-scheme { flex-direction: column; gap: 6px; padding: 9px 4px; }
+.a11y-swatch {
+  width: 28px; height: 28px;
+  border: 1.5px solid;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-weight: 700; font-size: 13px;
+}
+.a11y-swatch-label { font-size: 10px; letter-spacing: 0.04em; }
+
+.a11y-reset {
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color .2s;
+}
+.a11y-reset:hover { color: var(--accent); }
+
+/* мобильная раскладка — панель прижата к краям экрана */
+@media (max-width: 520px) {
+  .a11y-panel {
+    position: fixed;
+    top: 64px;
+    left: 12px; right: 12px;
+    width: auto; max-width: none;
+  }
+}
