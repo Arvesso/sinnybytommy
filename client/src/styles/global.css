@@ -317,3 +317,58 @@ input, select, textarea { font-family: inherit; }
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
+
+/* ============================================================
+   Версия для слабовидящих (low-vision mode)
+   Включается через data-атрибуты на <html> (см. App.jsx).
+   Переопределяет дизайн-токены — поэтому работает на всём сайте.
+   ============================================================ */
+
+/* — Цветовые схемы — */
+html[data-a11y-scheme="mono"] {
+  --bg: #ffffff;  --bg-soft: #f0f0f0;
+  --ink: #000000; --ink-soft: #000000;
+  --muted: #333333; --line: #000000;
+  --accent: #000000; --accent-2: #000000;
+}
+html[data-a11y-scheme="dark"] {
+  --bg: #000000;  --bg-soft: #141414;
+  --ink: #ffec3d; --ink-soft: #ffec3d;   /* жёлтый на чёрном — классическая схема */
+  --muted: #d6c63f; --line: #ffec3d;
+  --accent: #ffec3d; --accent-2: #ffec3d;
+}
+html[data-a11y-scheme="beige"] {
+  --bg: #f7f1e1;  --bg-soft: #efe7d2;
+  --ink: #3f3019; --ink-soft: #3f3019;
+  --muted: #6f5c3e; --line: #cdbd98;
+  --accent: #6b4e1e; --accent-2: #6b4e1e;
+}
+
+/* хедер использует хардкод-цвета — выравниваем под выбранную схему */
+html[data-a11y="on"] .site-header,
+html[data-a11y="on"] .site-header.scrolled {
+  background: var(--bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid var(--line);
+}
+
+/* — Масштаб шрифта (через zoom — корректно увеличивает px-вёрстку) — */
+html[data-a11y-font="large"]  { zoom: 1.12; }
+html[data-a11y-font="xlarge"] { zoom: 1.3; }
+
+/* — Межбуквенный интервал — */
+html[data-a11y-spacing="wide"] body { letter-spacing: 0.06em; word-spacing: 0.12em; }
+
+/* — Изображения в ч/б — */
+html[data-a11y-images="off"] img { filter: grayscale(100%) contrast(1.05); }
+
+/* — Заметный фокус для клавиатурной навигации — */
+html[data-a11y="on"] a:focus-visible,
+html[data-a11y="on"] button:focus-visible,
+html[data-a11y="on"] input:focus-visible,
+html[data-a11y="on"] select:focus-visible,
+html[data-a11y="on"] textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}

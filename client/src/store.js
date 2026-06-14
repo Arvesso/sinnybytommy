@@ -48,3 +48,34 @@ export const useUI = create((set) => ({
   searchOpen: false,
   setSearch: (open) => set({ searchOpen: open })
 }));
+
+// Версия для слабовидящих — настройки доступности.
+// Применяются к <html> через data-атрибуты (см. App.jsx и global.css).
+export const useA11y = create(persist((set, get) => ({
+  enabled: false,      // активна ли версия для слабовидящих
+  font: 'large',       // normal | large | xlarge
+  scheme: 'mono',      // mono (ч/б) | dark (инверсия) | beige (бежевый)
+  spacing: 'normal',   // normal | wide
+  images: 'on',        // on (цветные) | off (ч/б)
+  panelOpen: false,    // открыта ли панель настроек (не сохраняется)
+
+  togglePanel: () => set((s) => {
+    const opening = !s.panelOpen;
+    // первый клик по иконке сразу включает версию для слабовидящих
+    return opening && !s.enabled
+      ? { panelOpen: true, enabled: true }
+      : { panelOpen: opening };
+  }),
+  closePanel: () => set({ panelOpen: false }),
+
+  setFont: (font) => set({ font, enabled: true }),
+  setScheme: (scheme) => set({ scheme, enabled: true }),
+  setSpacing: (spacing) => set({ spacing, enabled: true }),
+  setImages: (images) => set({ images, enabled: true }),
+
+  // вернуться к обычной версии (настройки запоминаются для следующего раза)
+  reset: () => set({ enabled: false, panelOpen: false })
+}), {
+  name: 'tommysinny-a11y',
+  partialize: (s) => ({ font: s.font, scheme: s.scheme, spacing: s.spacing, images: s.images, enabled: s.enabled })
+}));

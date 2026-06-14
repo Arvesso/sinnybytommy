@@ -20,7 +20,7 @@ import AdminCategories from './pages/admin/Categories.jsx';
 import AdminOrders from './pages/admin/Orders.jsx';
 import AdminUsers from './pages/admin/Users.jsx';
 import AdminContent from './pages/admin/Content.jsx';
-import { useAuth } from './store.js';
+import { useAuth, useA11y } from './store.js';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,6 +31,32 @@ function ScrollToTop() {
 function PageWrap({ children }) {
   // CSS-driven; no exit, no remount delay → instant route switches
   return <div className="page-transition">{children}</div>;
+}
+
+// Версия для слабовидящих: переносим настройки на <html> через data-атрибуты,
+// чтобы CSS-переменные и масштаб применялись ко всему сайту (см. global.css).
+function A11yController() {
+  const enabled = useA11y(s => s.enabled);
+  const font = useA11y(s => s.font);
+  const scheme = useA11y(s => s.scheme);
+  const spacing = useA11y(s => s.spacing);
+  const images = useA11y(s => s.images);
+
+  useEffect(() => {
+    const el = document.documentElement;
+    if (enabled) {
+      el.setAttribute('data-a11y', 'on');
+      el.setAttribute('data-a11y-font', font);
+      el.setAttribute('data-a11y-scheme', scheme);
+      el.setAttribute('data-a11y-spacing', spacing);
+      el.setAttribute('data-a11y-images', images);
+    } else {
+      ['data-a11y', 'data-a11y-font', 'data-a11y-scheme', 'data-a11y-spacing', 'data-a11y-images']
+        .forEach(a => el.removeAttribute(a));
+    }
+  }, [enabled, font, scheme, spacing, images]);
+
+  return null;
 }
 
 export default function App() {
@@ -46,6 +72,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <A11yController />
       {!isAdminRoute && !isAuthRoute && <Header />}
       <Routes location={location}>
           <Route path="/" element={<PageWrap><Home /></PageWrap>} />
